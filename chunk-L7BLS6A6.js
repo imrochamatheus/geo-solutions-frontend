@@ -1,0 +1,1 @@
+import{Eb as a,ba as n,eb as o,fb as i,vb as p}from"./chunk-6FEQCYFL.js";var u=(()=>{class e{static \u0275fac=function(t){return new(t||e)};static \u0275cmp=n({type:e,selectors:[["app-signup"]],standalone:!0,features:[a],decls:2,vars:0,template:function(t,s){t&1&&(o(0,"p"),p(1,"signup works!"),i())}})}return e})();export{u as SignupComponent};
