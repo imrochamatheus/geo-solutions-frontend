@@ -1,0 +1,58 @@
+<div class="bg-white shadow-md max-w-4xl mx-auto mt-10 rounded-xl border border-gray-200">
+  <h2 class="bg-green-500 text-white text-center text-2xl font-bold py-3 rounded-t-xl">Orçamento</h2>
+
+  <form [formGroup]="form" (ngSubmit)="gerarOrcamento()" class="p-6 space-y-6">
+    <!-- Localização -->
+    <div>
+      <h3 class="text-lg font-semibold mb-2">Localização</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <input formControlName="cep" placeholder="CEP" class="input" />
+        <input formControlName="logradouro" placeholder="Logradouro" class="input" />
+        <input formControlName="cidade" placeholder="Cidade" class="input" />
+      </div>
+    </div>
+
+    <!-- Sobre o Imóvel -->
+    <div>
+      <h3 class="text-lg font-semibold mb-2">Sobre o Imóvel</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <input formControlName="area" placeholder="Área do Imóvel (m²)" class="input" />
+        <select formControlName="tipoImovel" class="input">
+          <option value="" disabled selected>Selecione o tipo de imóvel</option>
+          <option value="residencial">Residencial</option>
+          <option value="comercial">Comercial</option>
+          <option value="rural">Rural</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Qual serviço -->
+    <div>
+      <h3 class="text-lg font-semibold mb-2">Qual serviço?</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <select id="servico" formControlName="servico" class="form-control">
+          <option [ngValue]="''">Selecione um serviço</option>
+
+          <option *ngFor="let servico of serviceTypes" [ngValue]="servico.id">
+            {{ servico.name }}
+          </option>
+        </select>
+        <select id="detalheServico" formControlName="detalheServico" class="form-control" [disabled]="!intentions.length">
+          <option *ngIf="!intentions.length" [ngValue]="''">Selecione o detalhe do serviço</option>
+          <option *ngFor="let intention of intentions" [ngValue]="intention.name">
+            {{ intention.name }}
+          </option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Botão -->
+    <div class="text-center">
+      <button type="submit"
+      (click)="getServiceTypes()"
+      class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold">
+        Gerar Orçamento
+      </button>
+    </div>
+  </form>
+</div>

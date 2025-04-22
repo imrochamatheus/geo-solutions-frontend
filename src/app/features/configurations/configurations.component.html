@@ -1,0 +1,81 @@
+<main class="pt-28 px-4 sm:px-8 pb-12 bg-gray-50 min-h-screen">
+  <section
+    class="bg-white p-8 sm:p-10 rounded-2xl shadow-lg w-full max-w-3xl mx-auto"
+  >
+    <h3 class="text-2xl font-semibold text-center text-gray-800 mb-10">
+      Configurações da Conta
+    </h3>
+    <form class="space-y-6" [formGroup]="form">
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Nome</label>
+        <div class="relative">
+          <input
+            type="text"
+            placeholder="Nome"
+            autocomplete="name"
+            formControlName="name"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#58A082] focus:border-[#58A082] transition duration-150"
+          />
+          <small class="text-red-500">{{ getFieldError("name") }}</small>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1"
+          >E-mail</label
+        >
+        <div class="relative">
+          <input
+            type="email"
+            autocomplete="email"
+            placeholder="E-mail"
+            formControlName="email"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#58A082] focus:border-[#58A082] transition duration-150"
+          />
+          <small class="text-red-500">{{ getFieldError("email") }}</small>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1"
+          >Senha Atual</label
+        >
+        <div class="relative">
+          <input
+            type="password"
+            autocomplete="current-password"
+            placeholder="Senha Atual"
+            formControlName="password"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#58A082] focus:border-[#58A082] transition duration-150"
+          />
+          <small class="text-red-500">{{ getFieldError("password") }}</small>
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1"
+          >Nova Senha</label
+        >
+        <div class="relative">
+          <input
+            formControlName="newPassword"
+            type="password"
+            autocomplete="new-password"
+            placeholder="Nova Senha"
+            class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#58A082] focus:border-[#58A082] transition duration-150"
+          />
+          <small class="text-red-500">{{ getFieldError("newPassword") }}</small>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-4">
+        <button
+          type="submit"
+          class="px-5 py-2 rounded-lg bg-[#58A082] text-white font-medium hover:bg-[#4a8870] transition-colors"
+        >
+          Salvar
+        </button>
+      </div>
+    </form>
+  </section>
+</main>
