@@ -1,5 +1,5 @@
 {
-  "name": "geo-solucoes",
+  "name": "geo-solutions-frontend",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -22,7 +22,7 @@
     "@fortawesome/fontawesome-free": "^6.7.2",
     "@tailwindcss/postcss": "^4.1.3",
     "bootstrap": "^5.3.3",
-    "geo-solucoes": "file:",
+    "geo-solutions-frontend": "file:",
     "jwt-decode": "^4.0.0",
     "lucide-angular": "^0.488.0",
     "postcss": "^8.5.3",
