@@ -1,70 +1,76 @@
 import { Routes } from '@angular/router';
 
 import { authGuard } from './core/guards/auth.guard';
+import { adminGuard } from './core/guards/admin.guard';
 import { authRoutes } from './features/auth/auth.routes';
+import { adminRoutes } from './features/admin/admin.routes';
+import { loginRedirectGuard } from './core/guards/login-redirect.guard';
 import { MainLayoutComponent } from './core/layout/main-layout/main-layout.component';
+import { UserLayoutComponent } from './core/layout/user-layout/user-layout.component';
 
 export const routes: Routes = [
   {
+    path: 'admin',
+    component: MainLayoutComponent,
+    canActivate: [authGuard, adminGuard],
+    children: adminRoutes,
+  },
+  {
     path: '',
     pathMatch: 'prefix',
-    component: MainLayoutComponent,
-    canActivate: [authGuard],
+    component: UserLayoutComponent,
     children: [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'dashboard',
+        redirectTo: 'auth',
       },
       {
-        path: 'dashboard',
+        path: 'auth',
+        title: 'Autenticação',
+        canActivate: [loginRedirectGuard],
+        children: authRoutes,
+      },
+      {
+        path: 'about',
+        title: 'Sobre',
         loadComponent: () =>
-          import('./features/dashboard/dashboard.component').then(
-            (m) => m.DashboardComponent
+          import('./features/common/about/about.component').then(
+            (m) => m.AboutComponent
           ),
       },
       {
-        path: 'variables',
+        path: 'services',
+        title: 'Serviços',
         loadComponent: () =>
-          import('./features/variables/variables.component').then(
-            (m) => m.VariablesComponent
+          import('./features/common/services/services.component').then(
+            (m) => m.ServicesComponent
           ),
       },
+
       {
-        path: 'regions',
+        path: 'budget',
+
         loadComponent: () =>
-          import('./features/regions/regions.component').then(
-            (m) => m.RegionsComponent
+         import('./features/common/budget/budget.component').then(
+            (m) => m.BudgetComponent
           ),
-      },
+     },
+     {
+       path: 'budget/:id',
+       loadComponent: () =>
+         import('./features/common/budget/budget.component').then(
+           (m) => m.BudgetComponent
+         ),
+     },
       {
         path: 'configurations',
         loadComponent: () =>
-          import('./features/configurations/configurations.component').then(
+          import('./features/admin/configurations/configurations.component').then(
             (m) => m.ConfigurationsComponent
           ),
       },
-      {
-        path: 'service-manager',
-        loadComponent: () =>
-          import('./features/service-manager/service-manager.component').then(
-            (m) => m.ServiceManagerComponent
-          ),
-      },
-      {
-        path: 'budget',
-        loadComponent: () =>
-          import('./features/budget/budget.component').then(
-            (m) => m.BudgetComponent
-          ),
-      },
     ],
-  },
-  {
-    path: 'auth',
-    title: 'Authentication',
-    canActivate: [authGuard],
-    children: authRoutes,
   },
   {
     path: 'not-found',

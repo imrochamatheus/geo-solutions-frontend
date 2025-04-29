@@ -1,68 +1,72 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { Router, RouterLinkActive, RouterModule } from '@angular/router';
-import { LucideAngularModule, MapPinned } from 'lucide-angular';
+
+import { Router, RouterModule } from '@angular/router';
 import {
   Home,
+  Menu,
   Users,
+  LogOut,
   Building2,
   FileText,
   Settings,
-  LogOut,
+  MapPinned,
+  LucideAngularModule,
 } from 'lucide-angular';
 import { AuthService } from '../../services/auth.service';
+import { LayoutService } from '../../services/layout.service';
+import { NavItemComponent } from '../nav-item/nav-item.component';
 
 @Component({
   selector: 'app-sidebar',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, RouterModule],
+  imports: [NavItemComponent, LucideAngularModule, CommonModule, RouterModule],
   templateUrl: './sidebar.component.html',
 })
 export class SidebarComponent {
-  public readonly icons = {
+  public activeItem = 'dashboard';
+  public icons = {
     home: Home,
+    menu: Menu,
     users: Users,
-    logOut: LogOut,
+    logout: LogOut,
     fileText: FileText,
     settings: Settings,
+    mapPinned: MapPinned,
     building2: Building2,
-    mappinned: MapPinned,
   };
 
   public readonly menuItems = [
-    { icon: this.icons.home, text: 'Dashboard', path: 'dashboard' },
-    { icon: this.icons.users, text: 'Usuários', path: 'users' },
+    { icon: this.icons.home, text: 'Dashboard', path: '/admin/dashboard' },
+    { icon: this.icons.users, text: 'Usuários', path: '/admin/users' },
     {
       icon: this.icons.building2,
       text: 'Variáveis',
-      path: 'variables',
+      path: '/admin/variables',
     },
     {
-      icon: this.icons.mappinned,
+      icon: this.icons.mapPinned,
       text: 'Regiões',
-      path: 'regions',
+      path: '/admin/regions',
     },
-    { icon: this.icons.fileText, text: 'Relatórios', path: 'reports' },
+    { icon: this.icons.fileText, text: 'Relatórios', path: '/reports' },
     {
       icon: this.icons.settings,
-      text: 'Gerenciador de Serviços',
-      path: 'service-manager',
+      text: 'Serviços',
+      path: '/admin/service-manager',
     },
     {
       icon: this.icons.settings,
       text: 'Configurações',
-      path: 'configurations',
+      path: '/admin/configurations',
     },
   ];
 
   constructor(
+    public readonly layout: LayoutService,
     private readonly router: Router,
     private readonly authService: AuthService
   ) {}
-
-  public logout(): void {
-    this.authService.logout();
-  }
 
   public isActive(path: string): boolean {
     return this.router.isActive(path, {
@@ -71,5 +75,9 @@ export class SidebarComponent {
       queryParams: 'exact',
       matrixParams: 'ignored',
     });
+  }
+
+  public logout(): void {
+    this.authService.logout();
   }
 }

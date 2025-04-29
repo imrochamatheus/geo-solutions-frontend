@@ -8,8 +8,8 @@ export interface BudgetResponse {
   id: number;
   user: BudgetUser;
   price: number;
-  startDate: string;
-  endDate: string;
+  startDate: Date;
+  endDate: Date;
   budgetAreaSettings: AreaParameters;
   confrontations: number;
   intentionService: IntentionServiceResponse;

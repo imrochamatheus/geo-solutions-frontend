@@ -4,14 +4,21 @@ import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { Register } from '../models/register.model';
 
+export interface RegisterResponse {
+  id: number;
+  name: string;
+  email: string;
+  cell: string;
+  userType: number;
+}
+
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RegisterService {
+  constructor(private readonly http: HttpClient) {}
 
-  constructor(private readonly http:HttpClient) { }
-
-  public register(body: Register): Observable<void>{
-   return  this.http.post<void>(`${environment.apiUrl}/Users`, body)
+  public register(body: Register): Observable<RegisterResponse> {
+    return this.http.post<RegisterResponse>(`${environment.apiUrl}/Users`, body);
   }
 }

@@ -7,6 +7,8 @@ import { BudgetResponse } from '../models/budget/budget.model';
 import { RemovedItem } from '../models/removed.item.model';
 import { CalcRequest } from '../models/budget/calcParameter/calc.request.model';
 import { ServiceTypeBudget } from '../models/budget/serviceTypeBudget/service.Type.Budget.model';
+import { AddressResponse } from '../models/budget/response/address.response.model';
+import { CalcResponse } from '../models/budget/response/CalcResponse.model';
 
 
 @Injectable({
@@ -15,6 +17,10 @@ import { ServiceTypeBudget } from '../models/budget/serviceTypeBudget/service.Ty
 export class BudgetService {
 
   constructor(private http: HttpClient) {}
+
+  public getBudgetById(budgetId: string): Observable<BudgetResponse> {
+    return this.http.get<BudgetResponse>(`${environment.apiUrl}/Budgets?budgetId=${budgetId}`);
+  }
 
   public postBudget(budget: BudgetRequest): Observable<BudgetResponse> {
     return this.http.post<BudgetResponse>(`${environment.apiUrl}/Budgets`, budget);
@@ -32,12 +38,22 @@ export class BudgetService {
     return this.http.put<BudgetResponse>(`${environment.apiUrl}/Budgets?budgetId=${budgetId}`, budgetToUpdate);
   }
 
-  public processCalc(calcRequest: CalcRequest): Observable<number>{
-    return this.http.post<number>(`${environment.apiUrl}/Budgets/calc`, calcRequest);
+  public processCalc(calcRequest: CalcRequest): Observable<CalcResponse>{
+    return this.http.post<CalcResponse>(`${environment.apiUrl}/Budgets/calc`, calcRequest);
   }
 
   public getAllServiceTypes(): Observable<ServiceTypeBudget[]>{
     return this.http.get<ServiceTypeBudget[]>(`${environment.apiUrl}/ServiceType`);
+  }
+
+  public fetchAddressByCep(cep:string): Observable<AddressResponse>{
+    return this.http.get<AddressResponse>(`${environment.apiUrl}/Budgets/address?cep=${cep}`);
+  }
+
+  public checkCityCoverageByIbge(ibgeId: string): Observable<boolean> {
+    return this.http.get<boolean>(
+      `${environment.apiUrl}/city/coverage?ibgeId=${ibgeId}`
+    );
   }
 
 }
