@@ -1,1 +1,0 @@
-import{Eb as i,ba as n,eb as o,fb as a,vb as r}from"./chunk-6FEQCYFL.js";var f=(()=>{class e{static \u0275fac=function(t){return new(t||e)};static \u0275cmp=n({type:e,selectors:[["app-not-found"]],standalone:!0,features:[i],decls:2,vars:0,template:function(t,d){t&1&&(o(0,"p"),r(1,"not-found works!"),a())}})}return e})();export{f as NotFoundComponent};
