@@ -4,6 +4,6 @@ export interface AddressRequest {
   street: string;
   city: string;
   state: string;
-  number: number;
+  number?: number;
   complement: string;
 }

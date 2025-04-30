@@ -1,12 +1,22 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+
+import { LucideAngularModule, Map } from 'lucide-angular';
 
 @Component({
   selector: 'app-not-found',
   standalone: true,
-  imports: [],
+  imports: [LucideAngularModule],
   templateUrl: './not-found.component.html',
-  styleUrl: './not-found.component.scss'
 })
 export class NotFoundComponent {
+  public readonly icons = {
+    map: Map,
+  };
 
+  constructor(private router: Router) {}
+
+  public goHome(): void {
+    this.router.navigate(['/']);
+  }
 }

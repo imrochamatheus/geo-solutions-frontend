@@ -3,21 +3,29 @@ import { Routes } from '@angular/router';
 export const authRoutes: Routes = [
   {
     path: '',
-    pathMatch: 'prefix',
     title: 'Authentication',
     children: [
       {
         path: '',
-        title: 'Login',
         pathMatch: 'full',
+        redirectTo: 'signin',
+      },
+
+      {
+        path: 'signin',
+        title: 'Login',
         loadComponent: () =>
-          import('./signin/signin.component').then((m) => m.SigninComponent),
+          import('./pages/signin/signin.component').then(
+            (m) => m.SigninComponent
+          ),
       },
       {
         path: 'signup',
-        title: 'Cadastro',
+        title: 'Registration',
         loadComponent: () =>
-          import('./signup/signup.component').then((m) => m.SignupComponent),
+          import('./pages/signin/signin.component').then(
+            (m) => m.SigninComponent
+          ),
       },
     ],
   },

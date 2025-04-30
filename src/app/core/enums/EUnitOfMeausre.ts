@@ -1,4 +1,4 @@
 export enum EUnitOfMeasure {
-  SquareMeter = 'SquareMeter',
-  Hectare = 'Hectare'
+  SquareMeter = 0,
+  Hectare = 1
 }
