@@ -14,9 +14,7 @@
       <small class="text-red-500">{{ getFieldError("price") }}</small>
     </div>
     <div>
-      <label class="block text-sm font-medium text-gray-700">
-        Área Mínima (m)
-      </label>
+      <label class="block text-sm font-medium text-gray-700"> De (km) </label>
       <input
         formControlName="areaMin"
         placeholder="0"
@@ -26,9 +24,7 @@
       <small class="text-red-500">{{ getFieldError("areaMin") }}</small>
     </div>
     <div>
-      <label class="block text-sm font-medium text-gray-700">
-        Área Máxima (m)
-      </label>
+      <label class="block text-sm font-medium text-gray-700"> Até (km) </label>
       <input
         formControlName="areaMax"
         placeholder="0"
@@ -64,7 +60,7 @@
   <div class="space-y-4">
     <div>
       <label class="block text-sm font-medium text-gray-700">
-        Área Mínima (m)
+        Distâcia mínima (km)
       </label>
       <input
         formControlName="areaMin"
@@ -76,7 +72,7 @@
     </div>
     <div>
       <label class="block text-sm font-medium text-gray-700">
-        Área Máxima (m)
+        Distância Máxima (km)
       </label>
       <input
         formControlName="areaMax"
@@ -115,7 +111,7 @@
     </div>
     <div>
       <label class="block text-sm font-medium text-gray-700">
-        Distância Mínima (m)
+        Distância Mínima (km)
       </label>
       <input
         formControlName="distanteMin"
@@ -127,7 +123,7 @@
     </div>
     <div>
       <label class="block text-sm font-medium text-gray-700">
-        Distância Máxima (m)
+        Distância Máxima (km)
       </label>
       <input
         formControlName="distanteMax"
@@ -213,10 +209,10 @@
     </button>
     <button
       type="submit"
-      [disabled]="!form.valid"
+      [disabled]="!isFormValid()"
       [ngClass]="{
-        'bg-[#58A082] hover:bg-[#4a8870] cursor-pointer ': form.valid,
-        'bg-gray-300 text-gray-500 cursor-not-allowed': !form.valid
+        'bg-[#58A082] hover:bg-[#4a8870] cursor-pointer ': isFormValid(),
+        'bg-gray-300 text-gray-500 cursor-not-allowed': !isFormValid()
       }"
       class="px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 rounded-md text-white"
     >

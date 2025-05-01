@@ -1,21 +1,21 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
   FormsModule,
   Validators,
   ReactiveFormsModule,
-} from '@angular/forms';
+} from "@angular/forms";
 
-import { LucideAngularModule, X } from 'lucide-angular';
-import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { LucideAngularModule, X } from "lucide-angular";
+import { DynamicDialogConfig, DynamicDialogRef } from "primeng/dynamicdialog";
 
-import { VariableType } from '../../models/variables.model';
-import { AddVariableModal } from '../../models/add-service.model';
-import { CommonModule } from '@angular/common';
+import { VariableType } from "../../models/variables.model";
+import { AddVariableModal } from "../../models/add-service.model";
+import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: 'app-add-service-modal',
+  selector: "app-add-service-modal",
   standalone: true,
   imports: [
     CommonModule,
@@ -23,7 +23,7 @@ import { CommonModule } from '@angular/common';
     LucideAngularModule,
     ReactiveFormsModule,
   ],
-  templateUrl: './service-modal.component.html',
+  templateUrl: "./service-modal.component.html",
 })
 export class AddServiceModalComponent implements OnInit {
   public form!: FormGroup;
@@ -76,12 +76,12 @@ export class AddServiceModalComponent implements OnInit {
       case VariableType.STARTING_POINT:
         this.form = this.fb.group({
           id: [null],
-          city: ['', Validators.required],
-          state: ['', Validators.required],
-          street: ['', Validators.required],
-          number: ['', Validators.required],
-          country: ['', Validators.required],
-          neighborhood: ['', Validators.required],
+          city: ["", Validators.required],
+          state: ["", Validators.required],
+          street: ["", Validators.required],
+          number: ["", Validators.required],
+          country: ["", Validators.required],
+          neighborhood: ["", Validators.required],
         });
         break;
     }
@@ -89,24 +89,26 @@ export class AddServiceModalComponent implements OnInit {
 
   public getFieldError(field: string): string {
     const control = this.form.get(field);
-    let errorMessage = '';
+    let errorMessage = "";
 
     if (!control?.touched || !control?.dirty) {
       return errorMessage;
     }
 
-    if (control?.hasError('required')) {
-      errorMessage = 'Campo obrigatório';
-    } else if (control?.hasError('min')) {
-      errorMessage = 'Valor mínimo inválido';
-    } else if (control?.hasError('maxlength')) {
-      errorMessage = 'Valor máximo inválido';
+    if (control?.hasError("required")) {
+      errorMessage = "Campo obrigatório";
+    } else if (control?.hasError("min")) {
+      errorMessage = "Valor mínimo inválido";
+    } else if (control?.hasError("maxlength")) {
+      errorMessage = "Valor máximo inválido";
     }
 
     return errorMessage;
   }
 
   public onSubmit(): void {
+    console.log(this.form.value);
+
     if (!this.form.valid) {
       this.form.markAllAsTouched();
       return;
@@ -114,6 +116,18 @@ export class AddServiceModalComponent implements OnInit {
 
     this.data.onSave(this.data.type, this.form.value);
     this.ref.close();
+  }
+
+  public isFormValid(): boolean {
+    if (this.data.type === VariableType.CONFRONTATION) {
+      const urbanOrRuralIsSelected =
+        this.form.get("urbanConfrontation")?.value === true ||
+        this.form.get("ruralConfrontation")?.value === true;
+
+      return this.form.valid && urbanOrRuralIsSelected;
+    }
+
+    return this.form.valid;
   }
 
   public onClose(): void {

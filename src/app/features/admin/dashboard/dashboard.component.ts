@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, signal } from '@angular/core';
+import { CommonModule } from "@angular/common";
+import { Component, OnInit, signal } from "@angular/core";
 
 import {
   FileText,
@@ -8,12 +8,12 @@ import {
   Sliders,
   Settings,
   LucideAngularModule,
-} from 'lucide-angular';
-import { forkJoin, take } from 'rxjs';
-import { NgApexchartsModule } from 'ng-apexcharts';
+} from "lucide-angular";
+import { forkJoin, take } from "rxjs";
+import { NgApexchartsModule } from "ng-apexcharts";
 
-import { AuthService } from '../../../core/services/auth.service';
-import { City, CityService } from '../regions/services/city.service';
+import { AuthService } from "../../../core/services/auth.service";
+import { City, CityService } from "../regions/services/city.service";
 import {
   Accommodation,
   Confrontation,
@@ -21,20 +21,20 @@ import {
   StartingPoint,
   VariableConfig,
   VariableType,
-} from '../variables/models/variables.model';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { BudgetService } from '../../../core/services/budget.service';
-import { BudgetResponse } from '../../../core/models/budget/budget.model';
-import { ServiceType } from '../service-manager/models/service-type.model';
-import { DisplacementService } from '../variables/services/displacement.service';
-import { ConfrontationService } from '../variables/services/confrontation.service';
-import { AccommodationService } from '../variables/services/accommodation.service';
-import { StartingPointService } from '../variables/services/starting-point.service';
-import { ServiceTypeService } from '../service-manager/services/service-type.service';
-import { DashboardCardComponent } from './components/dashboard-card/dashboard-card.component';
+} from "../variables/models/variables.model";
+import { ProgressSpinnerModule } from "primeng/progressspinner";
+import { BudgetService } from "../../../core/services/budget.service";
+import { BudgetResponse } from "../../../core/models/budget/budget.model";
+import { ServiceType } from "../service-manager/models/service-type.model";
+import { DisplacementService } from "../variables/services/displacement.service";
+import { ConfrontationService } from "../variables/services/confrontation.service";
+import { AccommodationService } from "../variables/services/accommodation.service";
+import { StartingPointService } from "../variables/services/starting-point.service";
+import { ServiceTypeService } from "../service-manager/services/service-type.service";
+import { DashboardCardComponent } from "./components/dashboard-card/dashboard-card.component";
 
 @Component({
-  selector: 'app-dashboard',
+  selector: "app-dashboard",
   standalone: true,
   imports: [
     CommonModule,
@@ -44,7 +44,7 @@ import { DashboardCardComponent } from './components/dashboard-card/dashboard-ca
 
     DashboardCardComponent,
   ],
-  templateUrl: './dashboard.component.html',
+  templateUrl: "./dashboard.component.html",
 })
 export class DashboardComponent implements OnInit {
   public cities = signal<City[]>([]);
@@ -53,9 +53,9 @@ export class DashboardComponent implements OnInit {
   public budgets = signal<BudgetResponse[]>([]);
 
   public readonly recentBudgets = [
-    '0087 - Levantamento planialtimétrico cadastral',
-    '0086 - Georreferenciamento rural',
-    '0085 - Aerolevantamento urbano',
+    "0087 - Levantamento planialtimétrico cadastral",
+    "0086 - Georreferenciamento rural",
+    "0085 - Aerolevantamento urbano",
   ];
 
   public readonly icons = {
@@ -67,7 +67,7 @@ export class DashboardComponent implements OnInit {
   };
 
   public get userName(): string {
-    return this.authService.getUsername() || '';
+    return this.authService.getUsername() || "";
   }
 
   constructor(
@@ -126,9 +126,9 @@ export class DashboardComponent implements OnInit {
   }
 
   private convertToCurrency(value: number): string {
-    return value.toLocaleString('pt-br', {
-      style: 'currency',
-      currency: 'BRL',
+    return value.toLocaleString("pt-br", {
+      style: "currency",
+      currency: "BRL",
     });
   }
 
@@ -158,7 +158,7 @@ export class DashboardComponent implements OnInit {
       )}`;
     }
 
-    return '';
+    return "";
   }
 
   public ngOnInit(): void {

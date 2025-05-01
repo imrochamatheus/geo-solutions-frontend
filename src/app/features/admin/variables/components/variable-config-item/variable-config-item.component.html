@@ -41,7 +41,7 @@
 
 <ng-template #confrontacaoUrbana let-config="config">
   <p>Preço: R$ {{ config.price }}</p>
-  <p>Área: {{ config.areaMin }}m - {{ config.areaMax }}m</p>
+  <p>Divisa: {{ config.areaMin }} km - {{ config.areaMax }} km</p>
   <p>
     Tipo: @if ((config).urbanConfrontation && (config).ruralConfrontation) {
     Confrontação Urbana e Rural } @else if ((config).urbanConfrontation) {
@@ -50,13 +50,13 @@
 </ng-template>
 
 <ng-template #multiplicador let-config="config">
-  <p>Área: {{ config.areaMin }}m - {{ config.areaMax }}m</p>
+  <p>Distância: {{ config.areaMin }} km - {{ config.areaMax }}km</p>
   <p>Multiplicador: {{ config.multiplier }}x</p>
 </ng-template>
 
 <ng-template #distancia let-config="config">
   <p>Preço: R$ {{ config.price }}</p>
-  <p>Distância: {{ config.distanteMin }}m - {{ config.distanteMax }}m</p>
+  <p>Distância: {{ config.distanteMin }} km - {{ config.distanteMax }} km</p>
 </ng-template>
 
 <ng-template #localizacao let-config="config">
