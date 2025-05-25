@@ -84,10 +84,6 @@ export class IbgeService {
             };
           })
           .slice(0, 10);
-      }),
-      catchError((err) => {
-        console.error('Erro ao buscar cidades:', err);
-        return of([]);
       })
     );
   }

@@ -1,16 +1,17 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {
+  AbstractControl,
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../../core/services/user.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { Router } from '@angular/router';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-configurations',
@@ -21,45 +22,65 @@ import { Router } from '@angular/router';
 export class ConfigurationsComponent implements OnInit {
   public profileForm: FormGroup;
   public passwordForm: FormGroup;
-  public errorMessage: string | null = null;
-  public successMessage: string | null = null;
   public showPasswordForm: boolean = false;
 
   constructor(
     private userService: UserService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdRef: ChangeDetectorRef,
+    private toastService: ToastService
   ) {
     this.profileForm = new FormGroup({
-      name: new FormControl('', [Validators.minLength(2)]),
-      email: new FormControl('', [Validators.email]),
+      name: new FormControl('', [Validators.required, Validators.minLength(2)]),
+      email: new FormControl('', [Validators.required, Validators.email]),
       cell: new FormControl('', [
+        Validators.required,
         Validators.pattern(/^\(?\d{2}\)?\s?9\d{4}-?\d{4}$/),
       ]),
     });
 
-    this.passwordForm = new FormGroup({
-      currentPassword: new FormControl('', [
-        Validators.required,
-        Validators.minLength(8),
-      ]),
-      newPassword: new FormControl('', [
-        Validators.required,
-        Validators.minLength(8),
-        Validators.pattern(/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/),
-      ]),
-    });
+    this.passwordForm = new FormGroup(
+      {
+        currentPassword: new FormControl('', [
+          Validators.required,
+          Validators.minLength(8),
+        ]),
+        newPassword: new FormControl('', [
+          Validators.required,
+          Validators.minLength(8),
+          Validators.pattern(
+            /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
+          ),
+        ]),
+        confirmPassword: new FormControl('', [Validators.required]),
+      },
+      { validators: this.passwordsMatchValidator }
+    );
   }
 
   ngOnInit(): void {
     this.loadUserData();
   }
 
+  private passwordsMatchValidator(
+    control: AbstractControl
+  ): { [key: string]: any } | null {
+    const form = control as FormGroup;
+    const newPassword = form.get('newPassword')?.value;
+    const confirmPassword = form.get('confirmPassword')?.value;
+
+    if (newPassword !== confirmPassword) {
+      return { passwordMismatch: true };
+    }
+    return null;
+  }
+
   private loadUserData(): void {
     const decodedJwt = this.authService.getDecodedJwt();
     console.debug('Decoded JWT:', decodedJwt);
     if (decodedJwt && decodedJwt.nameid) {
-      const userId = +decodedJwt.nameid;
+      const userId = decodedJwt.nameid;
       console.debug('Loading user data for ID:', userId);
       this.userService.getUserById(userId).subscribe({
         next: (user: UserDTO) => {
@@ -71,7 +92,7 @@ export class ConfigurationsComponent implements OnInit {
           });
         },
         error: (err) => {
-          this.errorMessage = 'Erro ao carregar os dados do usuário.';
+          this.toastService.showError('Erro ao carregar os dados do usuário.');
           console.error('Error loading user data:', err);
           if (err.status === 401) {
             this.authService.logout();
@@ -80,13 +101,16 @@ export class ConfigurationsComponent implements OnInit {
         },
       });
     } else {
-      this.errorMessage = 'Usuário não autenticado.';
+      this.toastService.showError('Usuário não autenticado.');
       this.authService.logout();
       this.router.navigate(['/auth/signin']);
     }
   }
 
-  public getFieldError(field: string, form: FormGroup = this.profileForm): string {
+  public getFieldError(
+    field: string,
+    form: FormGroup = this.profileForm
+  ): string {
     const control = form.get(field);
     let errorMessage = '';
 
@@ -104,7 +128,8 @@ export class ConfigurationsComponent implements OnInit {
       if (field === 'cell') {
         errorMessage = 'Número de celular inválido. Ex: (31) 98888-8888';
       } else if (field === 'newPassword') {
-        errorMessage = 'A senha deve conter pelo menos uma letra maiúscula, um número e um caractere especial.';
+        errorMessage =
+          'A senha deve conter pelo menos uma letra maiúscula, um número e um caractere especial.';
       }
     }
 
@@ -115,8 +140,6 @@ export class ConfigurationsComponent implements OnInit {
     this.showPasswordForm = !this.showPasswordForm;
     if (!this.showPasswordForm) {
       this.passwordForm.reset();
-      this.errorMessage = null;
-      this.successMessage = null;
     }
   }
 
@@ -125,36 +148,38 @@ export class ConfigurationsComponent implements OnInit {
       this.profileForm.markAllAsTouched();
       return;
     }
-  
-    this.errorMessage = null;
-    this.successMessage = null;
-  
+
     const decodedJwt = this.authService.getDecodedJwt();
     if (decodedJwt && decodedJwt.nameid) {
-      const userId = +decodedJwt.nameid;
-  
+      const userId = decodedJwt.nameid;
+
       const userData: Partial<UserDTO> = {
         id: userId,
-        userType: 1
+        userType: 1,
       };
-  
+
       const name = this.profileForm.get('name')?.value ?? undefined;
       const email = this.profileForm.get('email')?.value ?? undefined;
       const cell = this.profileForm.get('cell')?.value ?? undefined;
-  
+
       if (name) userData.name = name;
       if (email) userData.email = email;
       if (cell) userData.cell = cell;
-  
+
       this.userService.updateUser(userData).subscribe({
         next: (response) => {
           if (response && response.jwtToken) {
             this.authService.saveToken(response.jwtToken);
           }
-          this.successMessage = 'Dados do perfil atualizados com sucesso!';
+          this.toastService.showSuccess(
+            'Dados do perfil atualizados com sucesso!'
+          );
+          this.loadUserData();
+          this.cdRef.detectChanges();
         },
         error: (err) => {
-          this.errorMessage = err.error || 'Erro ao atualizar o perfil.';
+          const errorMsg = err.error || 'Erro ao atualizar o perfil.';
+          this.toastService.showError(errorMsg);
           console.error('Error updating profile:', err);
           if (err.status === 401) {
             this.authService.logout();
@@ -163,7 +188,7 @@ export class ConfigurationsComponent implements OnInit {
         },
       });
     } else {
-      this.errorMessage = 'Usuário não autenticado.';
+      this.toastService.showError('Usuário não autenticado.');
       this.authService.logout();
       this.router.navigate(['/auth/signin']);
     }
@@ -175,14 +200,13 @@ export class ConfigurationsComponent implements OnInit {
       return;
     }
 
-    this.errorMessage = null;
-    this.successMessage = null;
-
     const currentPassword = this.passwordForm.get('currentPassword')?.value;
     const newPassword = this.passwordForm.get('newPassword')?.value;
 
     if (!currentPassword || !newPassword) {
-      this.errorMessage = 'Por favor, preencha ambos os campos de senha.';
+      this.toastService.showError(
+        'Por favor, preencha ambos os campos de senha.'
+      );
       return;
     }
 
@@ -193,14 +217,17 @@ export class ConfigurationsComponent implements OnInit {
 
     this.userService.changePassword(changePasswordData).subscribe({
       next: () => {
-        this.successMessage = 'Senha alterada com sucesso! Faça login novamente.';
+        this.toastService.showSuccess(
+          'Senha alterada com sucesso! Faça login novamente.'
+        );
         this.passwordForm.reset();
         this.showPasswordForm = false;
         this.authService.logout();
         this.router.navigate(['/auth/signin']);
       },
       error: (err) => {
-        this.errorMessage = err.error || 'Erro ao alterar a senha.';
+        const errorMsg = err.error || 'Erro ao alterar a senha.';
+        this.toastService.showError(errorMsg);
         console.error('Error changing password:', err);
         if (err.status === 401) {
           this.authService.logout();
@@ -212,7 +239,7 @@ export class ConfigurationsComponent implements OnInit {
 }
 
 interface UserDTO {
-  id?: number;
+  id?: string;
   name: string;
   email: string;
   cell: string;

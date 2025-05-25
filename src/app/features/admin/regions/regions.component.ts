@@ -3,6 +3,7 @@ import { CityService, City } from './services/city.service';
 import { CitySearchComponent } from './components/city-search/city-search.component';
 import { CommonModule } from '@angular/common';
 import { LucideAngularModule, Search, XCircle } from 'lucide-angular';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-regions',
@@ -13,14 +14,17 @@ import { LucideAngularModule, Search, XCircle } from 'lucide-angular';
 })
 export class RegionsComponent implements OnInit {
   servingCities: City[] = [];
-  isLoading: boolean = false;
+  isLoading = false;
   errorMessage: string | null = null;
-  showRemoveConfirmation: boolean = false;
+  showRemoveConfirmation = false;
   cityToRemove: City | null = null;
   serchIcon = Search;
   removeIcon = XCircle;
 
-  constructor(private cityService: CityService) {}
+  constructor(
+    private cityService: CityService,
+    private toastService: ToastService
+  ) {}
 
   ngOnInit() {
     this.loadServingCities();
@@ -62,11 +66,12 @@ export class RegionsComponent implements OnInit {
           this.loadServingCities();
           this.showRemoveConfirmation = false;
           this.cityToRemove = null;
-          alert('Cidade removida com sucesso!');
+          this.toastService.showSuccess('Cidade removida com sucesso!');
         },
         error: (err) => {
           console.error('Erro ao remover cidade:', err);
-          alert(err.message || 'Erro ao remover cidade. Tente novamente.');
+          const msg = err?.error?.message || 'Erro ao remover cidade. Tente novamente.';
+          this.toastService.showError(msg);
           this.showRemoveConfirmation = false;
           this.cityToRemove = null;
         },

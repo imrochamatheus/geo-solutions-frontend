@@ -1,6 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-
 import { Router, RouterModule } from '@angular/router';
 import {
   Home,
@@ -11,6 +10,7 @@ import {
   FileText,
   Settings,
   MapPinned,
+  Wrench, // Novo ícone adicionado
   LucideAngularModule,
 } from 'lucide-angular';
 import { AuthService } from '../../services/auth.service';
@@ -34,11 +34,12 @@ export class SidebarComponent {
     settings: Settings,
     mapPinned: MapPinned,
     building2: Building2,
+    wrench: Wrench, // Novo ícone para Serviços
   };
 
   public readonly menuItems = [
     { icon: this.icons.home, text: 'Dashboard', path: '/admin/dashboard' },
-    { icon: this.icons.users, text: 'Usuários', path: '/admin/users' },
+    // { icon: this.icons.users, text: 'Usuários', path: '/admin/users' },
     {
       icon: this.icons.building2,
       text: 'Variáveis',
@@ -49,9 +50,13 @@ export class SidebarComponent {
       text: 'Regiões',
       path: '/admin/regions',
     },
-    { icon: this.icons.fileText, text: 'Relatórios', path: '/reports' },
     {
-      icon: this.icons.settings,
+      icon: this.icons.fileText,
+      text: 'Orçamentos',
+      path: '/admin/budget-reports',
+    },
+    {
+      icon: this.icons.wrench,
       text: 'Serviços',
       path: '/admin/service-manager',
     },

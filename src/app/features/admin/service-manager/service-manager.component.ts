@@ -78,11 +78,7 @@ export class ServiceManagerComponent implements OnInit {
   }
 
   private reloadPage(): void {
-    // Primeiro navega para a página inicial
-    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-      // Depois navega de volta para a página atual
-      this.router.navigate([this.router.url]);
-    });
+    this.ngOnInit();
   }
 
   public openIntentionFormModal(event: Event, intention?: Intention): void {

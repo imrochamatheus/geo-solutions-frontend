@@ -20,6 +20,14 @@ export const authRoutes: Routes = [
           ),
       },
       {
+        path: 'forgot',
+        title: 'Forgot my Password',
+        loadComponent: () =>
+          import('./pages/resetar-senha/recuperar-senha.component').then(
+            (m) => m.RecuperarSenhaComponent
+          ),
+      },
+      {
         path: 'signup',
         title: 'Registration',
         loadComponent: () =>

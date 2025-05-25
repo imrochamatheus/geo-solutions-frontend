@@ -44,4 +44,12 @@ export const adminRoutes: Route[] = [
         (m) => m.ServiceManagerComponent
       ),
   },
+  {
+  path: 'budget-reports',
+  title: 'Orçamentos',
+  loadComponent: () =>
+    import('./budget-reports/budget-reports.component').then(
+      (m) => m.BudgetReportsComponent
+    ),
+}
 ];

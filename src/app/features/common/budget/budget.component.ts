@@ -18,6 +18,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap, tap } from 'rxjs';
 import { ViaCepService } from '../../admin/regions/services/via-cep.service';
 import { UserHeaderComponent } from '../../../core/layout/user-header/user-header.component';
+import { BudgetResponse } from '../../../core/models/budget/budget.model';
+import { BudgetPdfService } from '../../../core/services/budget-pdf.service';
 
 @Component({
   selector: 'app-budget',
@@ -43,6 +45,7 @@ export class BudgetComponent implements OnInit {
   public mostrarConfrontacoes = false;
   public redirectWpp = false;
   public readonly:boolean = false;
+  public budgetData: BudgetResponse | null = null;
 
   ngOnInit(): void {
     this.getServiceTypes();
@@ -96,7 +99,8 @@ export class BudgetComponent implements OnInit {
     private authService: AuthService,
     public messageService: MessageService,
     private viaCepService: ViaCepService,
-    private router: Router
+    private router: Router,
+    private budgetPdfService: BudgetPdfService
   ) {
     this.form = this.fb.group({
       cep: [''],
@@ -280,10 +284,14 @@ export class BudgetComponent implements OnInit {
         .replace(/\./g, '')
         .replace(',', '.')
     )
+
+    const today = new Date();
+    const formattedStartDate = today.toISOString().split('.')[0];
+
     const budget: BudgetRequest = {
       userId: userId ?? 0,
       price: Number.isNaN(normalizedPrice) ? 0 : normalizedPrice,
-      startDate: formValue.startDate,
+      startDate: formattedStartDate,
       endDate: formValue.endDate,
       confrontations: formValue.confrontations || 0,
       serviceTypeId: formValue.servico || 0,
@@ -354,6 +362,7 @@ export class BudgetComponent implements OnInit {
       switchMap(() => this.budgetService.getBudgetById(budgetId))
     )
     .subscribe(response => {
+      this.budgetData = response;
       // preencher a lista de intentions com base no serviço
       const selectedService = this.serviceTypes.find(s => s.id === response.serviceType.id);
       this.intentions = selectedService?.intentionServices || [];
@@ -378,5 +387,17 @@ export class BudgetComponent implements OnInit {
       // deixar todos os campos do formulário como readonly
       this.form.disable();
     });
+  }
+
+  generatePdf(): void {
+    if (!this.budgetData) {
+      this.showToast('error', 'Erro', 'Dados do orçamento não disponíveis.');
+      return;
+    }
+    try {
+      this.budgetPdfService.generatePdf(this.budgetData);
+    } catch (error) {
+      this.showToast('error', 'Erro', 'Falha ao gerar o PDF. Tente novamente.');
+    }
   }
 }

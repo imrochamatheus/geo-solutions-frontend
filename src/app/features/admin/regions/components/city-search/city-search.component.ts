@@ -14,6 +14,7 @@ import { Subject, Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 import { City, IbgeService } from '../../services/ibge.service';
 import { LucideAngularModule, Search } from 'lucide-angular';
+import { ToastService } from '../../../../../core/services/toast.service';
 
 @Component({
   selector: 'app-city-search',
@@ -37,7 +38,8 @@ export class CitySearchComponent implements OnInit, OnDestroy {
 
   constructor(
     private ibgeService: IbgeService,
-    private cityService: CityService
+    private cityService: CityService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit() {
@@ -48,12 +50,22 @@ export class CitySearchComponent implements OnInit, OnDestroy {
           distinctUntilChanged(),
           switchMap((query) => this.ibgeService.searchCities(query))
         )
-        .subscribe((results) => {
-          this.searchResults = results;
-          this.isResultsVisible = results.length > 0;
+        .subscribe({
+          next: (results) => {
+            this.searchResults = results;
+            this.isResultsVisible = results.length > 0;
+          },
+          error: (err) => {
+            console.error('Erro ao buscar cidades:', err);
+            this.toastService.showError(
+              'Erro ao buscar cidades. Verifique sua conexão ou tente novamente mais tarde.'
+            );
+            this.searchResults = [];
+            this.isResultsVisible = false;
+          },
         })
     );
-
+  
     document.addEventListener('mousedown', this.handleClickOutside.bind(this));
   }
 
@@ -79,7 +91,7 @@ export class CitySearchComponent implements OnInit, OnDestroy {
           this.isResultsVisible = false;
           this.selectedCity = null;
           this.showConfirmation = false;
-          alert(`${result.name} foi adicionada com sucesso!`);
+          this.toastService.showSuccess(`${result.name} foi adicionada com sucesso!`);
         },
         error: (err) => {
           console.error('Erro ao adicionar cidade:', err);
@@ -87,7 +99,7 @@ export class CitySearchComponent implements OnInit, OnDestroy {
             err.status === 409
               ? 'Essa cidade já está cadastrada.'
               : err.message || 'Erro ao adicionar cidade. Tente novamente.';
-          alert(errorMessage);
+          this.toastService.showError(errorMessage);
           this.showConfirmation = false;
           this.selectedCity = null;
         },

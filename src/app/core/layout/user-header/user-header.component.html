@@ -19,24 +19,31 @@
           >Serviços</a
         >
         @if (!isAuthenticated()) {
-          <a
-            routerLink="/auth/signin"
-            routerLinkActive="text-white"
-            class="text-gray-300 hover:text-white transition-colors duration-200"
-            >Login</a
-          >
-          <a
-            routerLink="/auth/signup"
-            routerLinkActive="text-white"
-            class="text-gray-300 hover:text-white transition-colors duration-200"
-            >Cadastro</a
-          >
+        <a
+          routerLink="/auth/signin"
+          routerLinkActive="text-white"
+          class="text-gray-300 hover:text-white transition-colors duration-200"
+          >Login</a
+        >
+        <a
+          routerLink="/auth/signup"
+          routerLinkActive="text-white"
+          class="text-gray-300 hover:text-white transition-colors duration-200"
+          >Cadastro</a
+        >
         } @else {
-          <button
-            (click)="logout()"
-            class="text-gray-300 hover:text-white transition-colors duration-200"
-            >Sair</button
-          >
+        <a
+          routerLink="/user"
+          routerLinkActive="text-white"
+          class="text-gray-300 hover:text-white transition-colors duration-200"
+          >Perfil</a
+        >
+        <button
+          (click)="logout()"
+          class="text-gray-300 hover:text-white transition-colors duration-200"
+        >
+          Sair
+        </button>
         }
       </nav>
 
@@ -76,24 +83,25 @@
           >Serviços</a
         >
         @if (!isAuthenticated()) {
-          <a
-            routerLink="/auth/signin"
-            routerLinkActive="text-white"
-            class="text-gray-300 hover:text-white transition-colors duration-200"
-            >Login</a
-          >
-          <a
-            routerLink="/auth/signup"
-            routerLinkActive="text-white"
-            class="text-gray-300 hover:text-white transition-colors duration-200"
-            >Cadastro</a
-          >
+        <a
+          routerLink="/auth/signin"
+          routerLinkActive="text-white"
+          class="text-gray-300 hover:text-white transition-colors duration-200"
+          >Login</a
+        >
+        <a
+          routerLink="/auth/signup"
+          routerLinkActive="text-white"
+          class="text-gray-300 hover:text-white transition-colors duration-200"
+          >Cadastro</a
+        >
         } @else {
-          <button
-            (click)="logout()"
-            class="text-gray-300 hover:text-white transition-colors duration-200 text-left"
-            >Sair</button
-          >
+        <button
+          (click)="logout()"
+          class="text-gray-300 hover:text-white transition-colors duration-200 text-left"
+        >
+          Sair
+        </button>
         }
         <button
           routerLink="/budget"

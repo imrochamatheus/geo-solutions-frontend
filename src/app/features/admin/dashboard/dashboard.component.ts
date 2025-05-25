@@ -1,5 +1,5 @@
-import { CommonModule } from "@angular/common";
-import { Component, OnInit, signal } from "@angular/core";
+import { CommonModule } from '@angular/common';
+import { ChangeDetectorRef, Component, OnInit, signal } from '@angular/core';
 
 import {
   FileText,
@@ -8,12 +8,12 @@ import {
   Sliders,
   Settings,
   LucideAngularModule,
-} from "lucide-angular";
-import { forkJoin, take } from "rxjs";
-import { NgApexchartsModule } from "ng-apexcharts";
+} from 'lucide-angular';
+import { forkJoin, single, take } from 'rxjs';
+import { ApexAxisChartSeries, NgApexchartsModule } from 'ng-apexcharts';
 
-import { AuthService } from "../../../core/services/auth.service";
-import { City, CityService } from "../regions/services/city.service";
+import { AuthService } from '../../../core/services/auth.service';
+import { City, CityService } from '../regions/services/city.service';
 import {
   Accommodation,
   Confrontation,
@@ -21,20 +21,20 @@ import {
   StartingPoint,
   VariableConfig,
   VariableType,
-} from "../variables/models/variables.model";
-import { ProgressSpinnerModule } from "primeng/progressspinner";
-import { BudgetService } from "../../../core/services/budget.service";
-import { BudgetResponse } from "../../../core/models/budget/budget.model";
-import { ServiceType } from "../service-manager/models/service-type.model";
-import { DisplacementService } from "../variables/services/displacement.service";
-import { ConfrontationService } from "../variables/services/confrontation.service";
-import { AccommodationService } from "../variables/services/accommodation.service";
-import { StartingPointService } from "../variables/services/starting-point.service";
-import { ServiceTypeService } from "../service-manager/services/service-type.service";
-import { DashboardCardComponent } from "./components/dashboard-card/dashboard-card.component";
+} from '../variables/models/variables.model';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { BudgetService } from '../../../core/services/budget.service';
+import { BudgetResponse } from '../../../core/models/budget/budget.model';
+import { ServiceType } from '../service-manager/models/service-type.model';
+import { DisplacementService } from '../variables/services/displacement.service';
+import { ConfrontationService } from '../variables/services/confrontation.service';
+import { AccommodationService } from '../variables/services/accommodation.service';
+import { StartingPointService } from '../variables/services/starting-point.service';
+import { ServiceTypeService } from '../service-manager/services/service-type.service';
+import { DashboardCardComponent } from './components/dashboard-card/dashboard-card.component';
 
 @Component({
-  selector: "app-dashboard",
+  selector: 'app-dashboard',
   standalone: true,
   imports: [
     CommonModule,
@@ -44,19 +44,15 @@ import { DashboardCardComponent } from "./components/dashboard-card/dashboard-ca
 
     DashboardCardComponent,
   ],
-  templateUrl: "./dashboard.component.html",
+  templateUrl: './dashboard.component.html',
 })
 export class DashboardComponent implements OnInit {
   public cities = signal<City[]>([]);
   public services = signal<ServiceType[]>([]);
   public variables = signal<VariableConfig[]>([]);
   public budgets = signal<BudgetResponse[]>([]);
-
-  public readonly recentBudgets = [
-    "0087 - Levantamento planialtimétrico cadastral",
-    "0086 - Georreferenciamento rural",
-    "0085 - Aerolevantamento urbano",
-  ];
+  public isDataLoaded = signal(false);
+  public allBudgets = signal<BudgetResponse[]>([]);
 
   public readonly icons = {
     pencil: Pencil,
@@ -65,9 +61,11 @@ export class DashboardComponent implements OnInit {
     settings: Settings,
     fileText: FileText,
   };
+  chartSeries!: ApexAxisChartSeries;
+  chartCategories!: string[];
 
   public get userName(): string {
-    return this.authService.getUsername() || "";
+    return this.authService.getUsername() || '';
   }
 
   constructor(
@@ -78,7 +76,8 @@ export class DashboardComponent implements OnInit {
     private readonly displacementService: DisplacementService,
     private readonly accomodationService: AccommodationService,
     private readonly confrontationService: ConfrontationService,
-    private readonly startingPointService: StartingPointService
+    private readonly startingPointService: StartingPointService,
+    private readonly cdr: ChangeDetectorRef
   ) {}
 
   private fetchAllVariableConfiguration(): void {
@@ -126,9 +125,9 @@ export class DashboardComponent implements OnInit {
   }
 
   private convertToCurrency(value: number): string {
-    return value.toLocaleString("pt-br", {
-      style: "currency",
-      currency: "BRL",
+    return value.toLocaleString('pt-br', {
+      style: 'currency',
+      currency: 'BRL',
     });
   }
 
@@ -158,11 +157,65 @@ export class DashboardComponent implements OnInit {
       )}`;
     }
 
-    return "";
+    return '';
   }
 
-  public ngOnInit(): void {
-    this.fetchCardsData();
-    this.fetchAllVariableConfiguration();
+  public chartData = signal<{
+    categories: string[];
+    series: { name: string; data: number[] };
+  }>({
+    categories: [],
+    series: { name: 'Orçamentos', data: [] },
+  });
+
+private processBudgetData(): void {
+  const monthlyCounts: { [key: string]: number } = {};
+
+  this.budgets().forEach((budget) => {
+    const date = new Date(budget.startDate);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // 01 a 12
+    const key = `${year}-${month}`; // chave cronológica
+    monthlyCounts[key] = (monthlyCounts[key] || 0) + 1;
+  });
+
+  // Ordenar as chaves cronologicamente
+  const sortedKeys = Object.keys(monthlyCounts).sort();
+
+  // Gerar labels formatadas e os dados
+  const categories = sortedKeys.map((key) => {
+    const [year, month] = key.split('-');
+    const date = new Date(Number(year), Number(month) - 1);
+    return date.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
+  });
+
+  const data = sortedKeys.map((key) => monthlyCounts[key]);
+
+  this.chartData.set({
+    categories,
+    series: { name: 'Orçamentos', data },
+  });
+}
+
+    public ngOnInit(): void {
+      this.fetchCardsData();
+      this.fetchAllVariableConfiguration();
+
+      this.budgetService.getAllBudgets().subscribe((budgets: BudgetResponse[]) => {
+      const sortedBudgets = budgets.sort((a, b) =>
+        new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
+      );
+
+      this.allBudgets.set(sortedBudgets); 
+      this.budgets.set(sortedBudgets); 
+
+      this.processBudgetData(); 
+
+      const data = this.chartData(); 
+      this.chartSeries = [data.series]; 
+      this.chartCategories = data.categories;
+
+      this.isDataLoaded.set(true);
+    });
   }
 }

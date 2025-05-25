@@ -40,6 +40,14 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'user',
+        title: 'Usuário',
+        loadComponent: () =>
+          import('./features/auth/components/update-user-form/update-user-form.component').then(
+            (m) => m.UpdateUserFormComponent
+          ),
+      },
+      {
         path: 'services',
         title: 'Serviços',
         loadComponent: () =>

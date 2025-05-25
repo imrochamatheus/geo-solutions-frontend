@@ -5,7 +5,6 @@ import { HttpClient } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 
-
 import { AuthRequest, AuthResponse, DecodedToken } from '../models/auth.model';
 import { environment } from '../../../environments/environment';
 
@@ -67,12 +66,18 @@ export class AuthService {
     this.router.navigate(['/auth']);
   }
 
-  public getDecodedJwt(): { role: string; nameid: string; username: string } | null {
+  public getDecodedJwt(): {
+    role: string;
+    nameid: string;
+    username: string;
+  } | null {
     const token = this.getToken();
     if (!token) return null;
 
     try {
-      return jwtDecode<{ role: string; nameid: string; username: string }>(token);
+      return jwtDecode<{ role: string; nameid: string; username: string }>(
+        token
+      );
     } catch (error) {
       console.error('Error decoding JWT token:', error);
       return null;
@@ -82,16 +87,13 @@ export class AuthService {
   public isAuthenticated(): boolean {
     const token = this.getToken();
     if (!token) {
-      console.debug('No token found in localStorage');
       return false;
     }
     try {
       const decoded: { exp: number } = jwtDecode(token);
       const isValid = decoded.exp * 1000 > Date.now();
-      console.debug('Token validity:', isValid, 'Expiration:', new Date(decoded.exp * 1000));
       return isValid;
     } catch {
-      console.debug('Invalid token format');
       return false;
     }
   }
