@@ -7,7 +7,7 @@ RUN npm install --force
 
 COPY . .
 
-RUN npm run build -- --configuration=production
+RUN npm run build --configuration=production
 
 FROM nginx:1.25.4-alpine
 
