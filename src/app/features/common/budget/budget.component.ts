@@ -20,6 +20,8 @@ import { ViaCepService } from '../../admin/regions/services/via-cep.service';
 import { UserHeaderComponent } from '../../../core/layout/user-header/user-header.component';
 import { BudgetResponse } from '../../../core/models/budget/budget.model';
 import { BudgetPdfService } from '../../../core/services/budget-pdf.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+
 
 @Component({
   selector: 'app-budget',
@@ -29,7 +31,8 @@ import { BudgetPdfService } from '../../../core/services/budget-pdf.service';
     CommonModule,
     ToastModule,
     FooterComponent,
-    UserHeaderComponent
+    UserHeaderComponent,
+    ProgressSpinnerModule
   ],
   providers: [MessageService],
   templateUrl: './budget.component.html',
@@ -44,6 +47,12 @@ export class BudgetComponent implements OnInit {
   public EUnitOfMeasure = EUnitOfMeasure;
   public mostrarConfrontacoes = false;
   public redirectWpp = false;
+  public isCalculating = false;
+  public isSavingBudget = false;
+  public isGetingAddress = false
+  get isLoading(): boolean {
+    return this.isCalculating || this.isSavingBudget || this.isGetingAddress;
+  }
   public readonly:boolean = false;
   public budgetData: BudgetResponse | null = null;
 
@@ -134,11 +143,12 @@ export class BudgetComponent implements OnInit {
     if (!cep) {
       return;
     }
-
+    this.isGetingAddress = true
     this.viaCepService.getCityIbgeIdByCep(cep).subscribe({
       next: (ibgeId: number | null) => {
         if (!ibgeId) {
           this.showNoCoverageModal();
+          this.isGetingAddress = false;
           return;
         }
 
@@ -146,6 +156,7 @@ export class BudgetComponent implements OnInit {
           next: (hasCoverage: boolean) => {
             if (!hasCoverage) {
               this.showNoCoverageModal();
+              this.isGetingAddress = false;
               return;
             }
             this.form.get('numero')?.enable();
@@ -163,8 +174,10 @@ export class BudgetComponent implements OnInit {
                   cidade: response.city,
                   estado: response.state,
                 });
+               this.isGetingAddress = false;
               },
               error: (err) => {
+                this.isGetingAddress = false;
                 console.error('Erro ao buscar o endereço:', err);
                 this.showToast('error', `Erro`,'Não foi possível buscar o endereço. Verifique o CEP e tente novamente.')
               },
@@ -172,12 +185,14 @@ export class BudgetComponent implements OnInit {
           },
           error: (err) => {
             console.error('Erro ao verificar cobertura:', err);
+            this.isGetingAddress = false;
             this.showNoCoverageModal();
           },
         });
       },
       error: (err) => {
         console.error('Erro ao consultar ViaCEP:', err);
+          this.isGetingAddress = false;
         this.showNoCoverageModal();
       },
     });
@@ -241,11 +256,12 @@ export class BudgetComponent implements OnInit {
       serviceTypeId: formValue.servico,
       intentionServiceId: this.getIntentionServiceId(formValue.detalheServico)
     };
-
+    this.isCalculating = true;
     console.log('Requisição para cálculo:', calcRequest);
     this.budgetService.processCalc(calcRequest).subscribe({
       next: (price: CalcResponse) => {
         this.form.get('price')?.setValue(price.calcParametersResponse);
+         this.isCalculating = false;
       },
       error: (err) => {
         const response: ValidationErrorResponse = err.error
@@ -253,7 +269,7 @@ export class BudgetComponent implements OnInit {
         const mensagensErro = response.errors
             .map(e => `${e.message}`)
             .join('<br>');
-
+        this.isCalculating = false;
         this.showToast('error', `Erro ao gerar valor final`,mensagensErro)
       }
     });
@@ -310,17 +326,18 @@ export class BudgetComponent implements OnInit {
         complement: formValue.complemento
       }
     };
-
+   this.isSavingBudget = true;
     this.budgetService.postBudget(budget).subscribe({
       next: (res) => {
         this.showToast('success', 'Sucesso', 'Orçamento criado com sucesso!');
+       this.isSavingBudget = false;
         setTimeout(() => {
           this.router.navigate([`/budget/${res.id}`]);
         }, 1000);
       },
       error: (err) => {
         const response: ValidationErrorResponse = err.error
-
+        this.isSavingBudget = false;
         const mensagensErro = response.errors
             .map(e => `${e.message}`)
             .join('<br>');

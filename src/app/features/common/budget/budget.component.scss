@@ -8,3 +8,7 @@
 .main-form{
   margin-bottom: 20px;
 }
+
+::ng-deep .p-progress-spinner-circle {
+  stroke: #82c856 !important;
+}
