@@ -23,7 +23,15 @@ export const routes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'auth',
+        redirectTo: 'home',
+      },
+        {
+        path: 'home',
+        title: 'Home',
+        loadComponent: () =>
+          import('./features/auth/pages/home/home.component').then(
+            (m) => m.HomeComponent
+          ),
       },
       {
         path: 'auth',

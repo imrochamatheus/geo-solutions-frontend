@@ -29,7 +29,7 @@ export class UserHeaderComponent {
   }
 
   public goToHome(): void {
-    this.router.navigate(['/']);
+    this.router.navigate(['/home']);
   }
 
   public isAuthenticated(): boolean {

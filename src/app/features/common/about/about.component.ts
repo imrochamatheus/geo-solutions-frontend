@@ -8,6 +8,7 @@ import {
   Users,
   Award,
   LucideAngularModule,
+  BriefcaseBusiness,
 } from 'lucide-angular';
 
 @Component({
@@ -24,5 +25,6 @@ export class AboutComponent {
     clock: Clock,
     users: Users,
     award: Award,
+    business: BriefcaseBusiness
   };
 }

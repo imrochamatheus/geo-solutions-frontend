@@ -107,7 +107,6 @@ export class AddServiceModalComponent implements OnInit {
   }
 
   public onSubmit(): void {
-    console.log(this.form.value);
 
     if (!this.form.valid) {
       this.form.markAllAsTouched();

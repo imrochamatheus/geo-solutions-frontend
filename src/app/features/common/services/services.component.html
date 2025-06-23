@@ -4,13 +4,11 @@
       Nossas Soluções
     </h1>
     <p class="text-lg text-gray-700 leading-relaxed max-w-3xl">
-      Oferecemos um conjunto completo de serviços em geotecnologia, combinando
-      expertise técnica com tecnologia de ponta para entregar resultados
-      excepcionais.
+      Oferecemos soluções completas e personalizadas para atender às suas necessidades.
     </p>
   </div>
 
-  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
     @for (service of services; track $index) {
     <app-service-card
       [icon]="service.icon"
@@ -21,20 +19,26 @@
     }
   </div>
 
-  <div
-    class="bg-[#0A3C2F] text-white rounded-lg shadow-sm p-8 md:p-12 text-center mb-4"
-  >
-    <h2 class="text-2xl md:text-3xl font-semibold mb-4">
-      Precisa de uma solução personalizada?
-    </h2>
-    <p class="text-lg mb-8 opacity-90">
-      Nossa equipe está pronta para atender às suas necessidades específicas.
-    </p>
-    <button
-      class="px-6 py-3 bg-[#00B66C] rounded-lg hover:bg-white hover:text-[#0A3C2F] transition-colors duration-300"
-      (click)="openWhatsApp()"
-    >
-      Entre em contato
-    </button>
+  <section class="bg-black text-white py-8 mt-10 rounded-2xl shadow-lg">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
+    
+    <div class="text-center md:text-left">
+      <h3 class="text-2xl sm:text-3xl font-bold mb-2 drop-shadow">
+        Ficou com dúvidas?
+      </h3>
+      <p class="text-sm sm:text-base text-white/90 max-w-md">
+        Contate-nos pelo WhatsApp e tire todas as suas dúvidas.
+      </p>
+    </div>
+
+    <a 
+    href="https://wa.me/553130582961" 
+    target="_blank" 
+    class="bg-white text-green-600 font-semibold px-6 py-3 rounded-full flex items-center gap-2 hover:bg-gray-100 hover:scale-105 transition-transform duration-200">
+    <i class="fa-brands fa-whatsapp text-green-600 text-lg"></i>
+    Falar no WhatsApp
+  </a>
+
   </div>
+</section>
 </div>

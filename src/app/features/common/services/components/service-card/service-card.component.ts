@@ -2,11 +2,13 @@ import { Component, input } from '@angular/core';
 
 import {
   Map,
-  Bone,
+  Compass,
   Leaf,
   Mountain,
   FileCheck,
   LucideAngularModule,
+  Send,
+  ClipboardList,
 } from 'lucide-angular';
 
 @Component({
@@ -22,9 +24,10 @@ export class ServiceCardComponent {
 
   public readonly icons = {
     map: Map,
-    bone: Bone,
+    drone: Send,
     leaf: Leaf,
     mountain: Mountain,
     fileCheck: FileCheck,
+    clipboard: ClipboardList
   };
 }

@@ -66,7 +66,7 @@ export class SigninFormComponent {
 
           this.authService.isAdmin()
             ? this.router.navigate(['/admin'])
-            : this.router.navigate(['/about']);
+            : this.router.navigate(['/home']);
         }
       });
   }

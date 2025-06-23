@@ -1,54 +1,37 @@
-import { Component } from "@angular/core";
-import { ServiceCardComponent } from "./components/service-card/service-card.component";
+import { Component } from '@angular/core';
+import { ServiceCardComponent } from './components/service-card/service-card.component';
 
 @Component({
-  selector: "app-services",
+  selector: 'app-services',
   standalone: true,
   imports: [ServiceCardComponent],
-  templateUrl: "./services.component.html",
+  templateUrl: './services.component.html',
 })
 export class ServicesComponent {
   public readonly services = [
     {
-      icon: "map",
-      title: "Georreferenciamento",
+      icon: 'drone',
+      title: 'Aerolevantamento',
       description:
-        "Serviços precisos de georreferenciamento utilizando tecnologia de ponta e profissionais especializados.",
+        'Utilizamos drones e tecnologias de ponta para realizar levantamentos topográficos precisos e eficientes. Ideal para mapeamento de grandes áreas, projetos de engenharia e monitoramento ambiental.',
     },
     {
-      icon: "file-check",
-      title: "Regularização",
+      icon: 'file-check',
+      title: 'Regularização de Imóveis',
       description:
-        "Assessoria completa em regularização de propriedades rurais e urbanas, garantindo conformidade legal.",
+        'Regularize seu imóvel com segurança e agilidade. Atuamos com CAR, certificação SIGEF, parcelamento do solo, remembramento, desmembramento, desapropriação e usucapião.',
     },
     {
-      icon: "drone",
-      title: "Aerolevantamento",
+      icon: 'leaf',
+      title: 'Licenciamento Ambiental',
       description:
-        "Levantamentos aéreos com drones de última geração para mapeamentos detalhados e precisos.",
+        'Facilitamos o processo de licenciamento ambiental com assessoria completa para obtenção de Licença de Instalação (LI), Licença de Operação (LO) e emissão de alvarás.',
     },
     {
-      icon: "leaf",
-      title: "Licenciamento Ambiental",
+      icon: 'clipboard',
+      title: 'Execução e Acompanhamento de Obras',
       description:
-        "Suporte especializado em processos de licenciamento ambiental, desde o diagnóstico até a aprovação.",
-    },
-    {
-      icon: "mountain",
-      title: "Mineração",
-      description:
-        "Soluções completas para o setor de mineração, incluindo levantamentos e documentação técnica.",
+        'Garantimos precisão e qualidade em todas as etapas: terraplanagem, locação de obra (marcação no terreno) e As Built (documentação final da obra).',
     },
   ];
-
-  public openWhatsApp(): void {
-    const phoneNumber = "5531987824674";
-    const message = encodeURIComponent(
-      "Olá! Gostaria de mais informações sobre seus serviços. Poderia me ajudar?"
-    );
-
-    const url = `https://wa.me/${phoneNumber}?text=${message}`;
-
-    window.open(url, "_blank"); 
-  }
 }

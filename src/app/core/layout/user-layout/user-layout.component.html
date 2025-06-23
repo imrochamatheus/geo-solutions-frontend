@@ -1,6 +1,7 @@
 <div class="min-h-screen flex flex-col">
   <app-user-header></app-user-header>
-
+  <app-banner *ngIf="isHomeRoute"></app-banner>
+  
   <main class="flex-1 p-4 flex flex-col justify-center">
     <router-outlet></router-outlet>
   </main>

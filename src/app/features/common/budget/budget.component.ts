@@ -21,8 +21,6 @@ import { UserHeaderComponent } from '../../../core/layout/user-header/user-heade
 import { BudgetResponse } from '../../../core/models/budget/budget.model';
 import { BudgetPdfService } from '../../../core/services/budget-pdf.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-
-
 @Component({
   selector: 'app-budget',
   standalone: true,
@@ -47,14 +45,14 @@ export class BudgetComponent implements OnInit {
   public EUnitOfMeasure = EUnitOfMeasure;
   public mostrarConfrontacoes = false;
   public redirectWpp = false;
+  public readonly:boolean = false;
+  public budgetData: BudgetResponse | null = null;
   public isCalculating = false;
   public isSavingBudget = false;
   public isGetingAddress = false
   get isLoading(): boolean {
     return this.isCalculating || this.isSavingBudget || this.isGetingAddress;
   }
-  public readonly:boolean = false;
-  public budgetData: BudgetResponse | null = null;
 
   ngOnInit(): void {
     this.getServiceTypes();
@@ -174,11 +172,11 @@ export class BudgetComponent implements OnInit {
                   cidade: response.city,
                   estado: response.state,
                 });
-               this.isGetingAddress = false;
+                this.isGetingAddress = false;
               },
               error: (err) => {
-                this.isGetingAddress = false;
                 console.error('Erro ao buscar o endereço:', err);
+                this.isGetingAddress = false;
                 this.showToast('error', `Erro`,'Não foi possível buscar o endereço. Verifique o CEP e tente novamente.')
               },
             });
@@ -192,7 +190,7 @@ export class BudgetComponent implements OnInit {
       },
       error: (err) => {
         console.error('Erro ao consultar ViaCEP:', err);
-          this.isGetingAddress = false;
+        this.isGetingAddress = false;
         this.showNoCoverageModal();
       },
     });
@@ -257,11 +255,10 @@ export class BudgetComponent implements OnInit {
       intentionServiceId: this.getIntentionServiceId(formValue.detalheServico)
     };
     this.isCalculating = true;
-    console.log('Requisição para cálculo:', calcRequest);
     this.budgetService.processCalc(calcRequest).subscribe({
       next: (price: CalcResponse) => {
         this.form.get('price')?.setValue(price.calcParametersResponse);
-         this.isCalculating = false;
+        this.isCalculating = false;
       },
       error: (err) => {
         const response: ValidationErrorResponse = err.error
@@ -330,7 +327,7 @@ export class BudgetComponent implements OnInit {
     this.budgetService.postBudget(budget).subscribe({
       next: (res) => {
         this.showToast('success', 'Sucesso', 'Orçamento criado com sucesso!');
-       this.isSavingBudget = false;
+        this.isSavingBudget = false;
         setTimeout(() => {
           this.router.navigate([`/budget/${res.id}`]);
         }, 1000);
